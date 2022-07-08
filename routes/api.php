@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register',[AuthController::class,'register']);
 Route::post('/login',[AuthController::class,'login']);
-Route::post('/logout',[AuthController::class,'logout']);
+
 
 Route::get('/blogs', [BlogController::class,'index']);
 Route::get('/blogs/{blog}',[BlogController::class,'show']);
@@ -38,6 +38,7 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::put('/blogs/{blog}',[BlogController::class,'update']);
     Route::post('/blogs',[BlogController::class,'store']);
     Route::delete('/blogs/{blog}',[BlogController::class,'destroy']);
+    Route::post('/logout',[AuthController::class,'logout']);
 });
 
 
