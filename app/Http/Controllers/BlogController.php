@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\BlogResource;
 use App\Models\Blog;
 use Illuminate\Http\Request;
+use App\Http\Resources\BlogResource;
+use Illuminate\Support\Facades\Validator;
 
 class BlogController extends Controller
 {
@@ -29,11 +30,16 @@ class BlogController extends Controller
      */
     public function store(Request $request)
     {
-       $request->validate([
-            'title'=>'required',
-            'body'=>'required',
-            'author'=>'string'
-        ]);
+     $validator = Validator::make($request->all(),[
+        'title'=>'required',
+        'body'=>'required',
+        'author'=>'required'
+     ]);
+
+     if($validator->fails()){
+        return response()->json(['status_code'=>500,'message'=>'bad request']);
+     }
+           
 
         $blog = Blog::create([
             'title'=>$request->title,
@@ -41,7 +47,7 @@ class BlogController extends Controller
             'author'=>$request->author,
         ]);
 
-        return new BlogResource($blog);
+        return new BlogResource([$blog,'message'=>'Blog created successfully']);
     }
 
     /**
@@ -64,17 +70,7 @@ class BlogController extends Controller
      */
     public function update(Blog $blog, Request $request)
     {
-        $request->validate([
-            'title'=>'required',
-            'body'=>'required',
-            'author'=>'required'
-        ]);
-
-        $blog->update([
-            'title'=>$request->title,
-            'body'=>$request->body,
-            'author'=>$request->author,
-        ]);
+      $blog->update($request->all());
 
         return new BlogResource($blog);
     }
@@ -89,10 +85,6 @@ class BlogController extends Controller
     {
         $blog->delete();
 
-        return new BlogResource([
-            'blog'=>$blog,
-            'message'=>"blog deleted",
-            'status_code'=>200
-        ]);
+        return new BlogResource($blog);
     }
 }

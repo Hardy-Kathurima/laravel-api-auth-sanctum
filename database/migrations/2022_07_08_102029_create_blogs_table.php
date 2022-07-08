@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('body');
-            $table->string('author')->nullable()->default('Unknown');
+            $table->string('author');
             $table->timestamps();
         });
     }

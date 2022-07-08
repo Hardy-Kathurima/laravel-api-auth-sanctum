@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,8 +21,24 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
+// authentication routes
+
+Route::post('/register',[AuthController::class,'register']);
+Route::post('/login',[AuthController::class,'login']);
+Route::post('/logout',[AuthController::class,'logout']);
+
 Route::get('/blogs', [BlogController::class,'index']);
 Route::get('/blogs/{blog}',[BlogController::class,'show']);
-Route::put('/blogs/{blog}',[BlogController::class,'update']);
-Route::post('/blogs',[BlogController::class,'store']);
-Route::delete('/blogs/{blog}',[BlogController::class,'destroy']);
+
+
+
+// protected routes
+
+Route::group(['middleware'=>['auth:sanctum']],function(){
+    Route::put('/blogs/{blog}',[BlogController::class,'update']);
+    Route::post('/blogs',[BlogController::class,'store']);
+    Route::delete('/blogs/{blog}',[BlogController::class,'destroy']);
+});
+
+
+
